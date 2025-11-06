@@ -20,6 +20,7 @@ A beautiful, modern signup form built with **Next.js 15**, **TypeScript**, **Pri
 - 🔄 **Loading States** - Smooth user experience with loading indicators
 - 🛡️ **Type Safety** - Full TypeScript support throughout
 - 🎯 **Production Ready** - Optimized for deployment
+- 👥 **User Management** - View all registered users with elegant listing page
 
 ## 🏗️ Tech Stack
 
@@ -99,6 +100,14 @@ signup-prisma/
 │   │       └── route.ts          # Signup API endpoint
 │   ├── components/
 │   │   └── SignupForm.tsx        # Main signup form component
+│   ├── users/
+│   │   └── page.tsx              # Users listing page
+│   ├── generated/
+│   │   └── prisma/               # Generated Prisma client
+│   ├── globals.css               # Global styles
+│   ├── layout.tsx                # Root layout
+│   └── page.tsx                  # Homepage with signup form
+│   │   └── SignupForm.tsx        # Main signup form component
 │   ├── generated/
 │   │   └── prisma/               # Generated Prisma client
 │   ├── globals.css               # Global styles
@@ -173,6 +182,49 @@ Register a new user with email and optional name.
 - `400` - Validation error (invalid email, missing fields)
 - `409` - User already exists
 - `500` - Internal server error
+
+## 📄 Pages & Routes
+
+### `/` - Homepage (Signup Form)
+
+The main landing page featuring a beautiful signup form where users can register with their email and optional name.
+
+**Features:**
+
+- Real-time email validation
+- Form submission with loading states
+- Success/error feedback
+- Responsive design with dark mode support
+
+### `/users` - Users Listing Page
+
+A comprehensive page that displays all registered users from the database.
+
+**Features:**
+
+- Fetches all users using Prisma ORM
+- Displays user information (ID, name, email)
+- Responsive card-based layout
+- User count display
+- Navigation back to signup form
+- Dark mode support
+
+**Database Query:**
+
+```typescript
+const users = await prisma.user.findMany({
+  select: {
+    id: true,
+    name: true,
+    email: true,
+  },
+  orderBy: {
+    id: "desc", // Most recent registrations first
+  },
+});
+```
+
+**Access:** Navigate to [http://localhost:3000/users](http://localhost:3000/users) after starting the development server.
 
 ## 🛠️ Development Commands
 
