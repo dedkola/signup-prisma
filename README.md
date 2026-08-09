@@ -1,344 +1,191 @@
-# 🚀 Signup Form with Prisma Database
+# Signup Prisma
 
-A beautiful, modern signup form built with **Next.js 15**, **TypeScript**, **Prisma ORM**, and **PostgreSQL**. This project demonstrates a complete user registration system with real-time validation, error handling, and secure data storage.
+A small full-stack signup demo built with Next.js, React, Prisma, PostgreSQL, and Tailwind CSS. It accepts an email address and optional name, stores the user in PostgreSQL, prevents duplicate email registrations, and includes a page for viewing registered users.
 
-![Next.js](https://img.shields.io/badge/Next.js-15-black?style=for-the-badge&logo=next.js)
-![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
-![Prisma](https://img.shields.io/badge/Prisma-3982CE?style=for-the-badge&logo=prisma&logoColor=white)
-![PostgreSQL](https://img.shields.io/badge/PostgreSQL-316192?style=for-the-badge&logo=postgresql&logoColor=white)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+This is a learning project, not a complete authentication system: it does not create passwords, sessions, or verified identities.
 
-## ✨ Features
+## What it includes
 
-- 🎨 **Modern UI Design** - Clean, responsive interface with Tailwind CSS
-- 🔒 **Secure Validation** - Client-side and server-side email validation
-- 💾 **Database Integration** - PostgreSQL database with Prisma ORM
-- 🚫 **Duplicate Prevention** - Prevents multiple accounts with same email
-- 📱 **Fully Responsive** - Works perfectly on all device sizes
-- 🌙 **Dark Mode Support** - Beautiful light and dark themes
-- ⚡ **Real-time Feedback** - Instant validation and error messages
-- 🔄 **Loading States** - Smooth user experience with loading indicators
-- 🛡️ **Type Safety** - Full TypeScript support throughout
-- 🎯 **Production Ready** - Optimized for deployment
-- 👥 **User Management** - View all registered users with elegant listing page
+- A responsive signup form with loading, success, and error states
+- Client- and server-side email validation
+- Lowercased, unique email storage
+- Duplicate handling with an HTTP `409` response
+- A server-rendered user list at `/users`
+- Light and dark styles based on the device color scheme
+- A generated, type-safe Prisma client
 
-## 🏗️ Tech Stack
+## Stack
 
-| Technology            | Purpose            | Version |
-| --------------------- | ------------------ | ------- |
-| **Next.js**           | React Framework    | 15.x    |
-| **TypeScript**        | Type Safety        | 5.x     |
-| **Prisma**            | Database ORM       | 6.x     |
-| **PostgreSQL**        | Database           | Latest  |
-| **Tailwind CSS**      | Styling            | 4.x     |
-| **Heroicons**         | Icon Library       | 2.x     |
-| **Prisma Accelerate** | Connection Pooling | Latest  |
+| Tool | Version used by this repository |
+| --- | --- |
+| Next.js | 16.2 |
+| React | 19.2 |
+| Prisma | 6.19 |
+| Tailwind CSS | 4 |
+| TypeScript | 5 |
+| PostgreSQL | Configured through `DATABASE_URL` |
+| pnpm | 9.15.9 |
 
-## 🚀 Quick Start
+## Getting started
 
-### Prerequisites
+### Requirements
 
-- **Node.js** 18.0 or later
-- **PostgreSQL** database (local or cloud)
-- **pnpm** (recommended) or npm
+- Node.js 20.9 or newer
+- pnpm 9
+- A PostgreSQL database
 
-### 1. Clone the Repository
+### 1. Clone and install
 
 ```bash
-git clone https://github.com/yourusername/signup-prisma.git
+git clone https://github.com/dedkola/signup-prisma.git
 cd signup-prisma
-```
-
-### 2. Install Dependencies
-
-```bash
 pnpm install
-# or
-npm install
 ```
 
-### 3. Environment Setup
+### 2. Configure the database
 
-Create a `.env` file in the root directory:
+Create `.env` in the project root:
 
-```env
-# Database Configuration
-DATABASE_URL="your-postgresql-connection-string"
-
-# For Prisma Accelerate (optional)
-# DATABASE_URL="prisma+postgres://accelerate.prisma-data.net/?api_key=your-api-key"
+```dotenv
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:5432/DATABASE?schema=public"
 ```
 
-### 4. Database Setup
+Environment files are ignored by Git. Do not commit database credentials.
+
+### 3. Create the database tables and Prisma client
 
 ```bash
-# Generate Prisma client
-pnpm prisma generate
-
-# Push schema to database
-pnpm prisma db push
-
-# (Optional) Open Prisma Studio to view data
-pnpm prisma studio
+pnpm exec prisma db push
+pnpm exec prisma generate
 ```
 
-### 5. Run Development Server
+This repository currently uses `prisma db push` and does not contain a migration history.
+
+### 4. Start the app
 
 ```bash
 pnpm dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) in your browser to see the signup form.
+Open [http://localhost:3000](http://localhost:3000) for the signup form or [http://localhost:3000/users](http://localhost:3000/users) for the user list.
 
-## 📁 Project Structure
+## Routes
 
-```
-signup-prisma/
-├── app/
-│   ├── api/
-│   │   └── signup/
-│   │       └── route.ts          # Signup API endpoint
-│   ├── components/
-│   │   └── SignupForm.tsx        # Main signup form component
-│   ├── users/
-│   │   └── page.tsx              # Users listing page
-│   ├── generated/
-│   │   └── prisma/               # Generated Prisma client
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Homepage with signup form
-│   │   └── SignupForm.tsx        # Main signup form component
-│   ├── generated/
-│   │   └── prisma/               # Generated Prisma client
-│   ├── globals.css               # Global styles
-│   ├── layout.tsx                # Root layout
-│   └── page.tsx                  # Homepage
-├── lib/
-│   └── prisma.ts                 # Prisma client configuration
-├── prisma/
-│   ├── schema.prisma             # Database schema
-│   └── migrations/               # Database migrations
-├── public/                       # Static assets
-├── .env                          # Environment variables
-├── package.json                  # Dependencies
-├── tailwind.config.ts            # Tailwind configuration
-└── tsconfig.json                 # TypeScript configuration
-```
+| Route | Method | Purpose |
+| --- | --- | --- |
+| `/` | `GET` | Displays the signup form |
+| `/api/signup` | `POST` | Validates and creates a user |
+| `/users` | `GET` | Displays all users, newest ID first |
 
-## 🗄️ Database Schema
+### `POST /api/signup`
 
-```prisma
-model User {
-  id        Int      @id @default(autoincrement())
-  email     String   @unique
-  name      String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  posts     Post[]
-}
-
-model Post {
-  id        Int      @id @default(autoincrement())
-  title     String
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [authorId], references: [id])
-  authorId  Int
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-}
-```
-
-## 🔧 API Endpoints
-
-### POST `/api/signup`
-
-Register a new user with email and optional name.
-
-**Request Body:**
+Request body:
 
 ```json
 {
-  "email": "user@example.com",
-  "name": "John Doe"
+  "email": "ada@example.com",
+  "name": "Ada Lovelace"
 }
 ```
 
-**Success Response (201):**
+`email` is required. `name` is optional.
+
+Successful response:
 
 ```json
 {
   "message": "Account created successfully!",
   "user": {
     "id": 1,
-    "email": "user@example.com",
-    "name": "John Doe"
+    "email": "ada@example.com",
+    "name": "Ada Lovelace"
   }
 }
 ```
 
-**Error Responses:**
+Possible response statuses:
 
-- `400` - Validation error (invalid email, missing fields)
-- `409` - User already exists
-- `500` - Internal server error
+| Status | Meaning |
+| --- | --- |
+| `201` | User created |
+| `400` | Email is missing or invalid |
+| `409` | The normalized email already exists |
+| `500` | The database operation failed |
 
-## 📄 Pages & Routes
+## Database model
 
-### `/` - Homepage (Signup Form)
+The active schema is in [`prisma/schema.prisma`](prisma/schema.prisma). It contains `User` and `Post` models:
 
-The main landing page featuring a beautiful signup form where users can register with their email and optional name.
+```prisma
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+  posts Post[]
+}
 
-**Features:**
-
-- Real-time email validation
-- Form submission with loading states
-- Success/error feedback
-- Responsive design with dark mode support
-
-### `/users` - Users Listing Page
-
-A comprehensive page that displays all registered users from the database.
-
-**Features:**
-
-- Fetches all users using Prisma ORM
-- Displays user information (ID, name, email)
-- Responsive card-based layout
-- User count display
-- Navigation back to signup form
-- Dark mode support
-
-**Database Query:**
-
-```typescript
-const users = await prisma.user.findMany({
-  select: {
-    id: true,
-    name: true,
-    email: true,
-  },
-  orderBy: {
-    id: "desc", // Most recent registrations first
-  },
-});
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  authorId  Int?
+  author    User?   @relation(fields: [authorId], references: [id])
+}
 ```
 
-**Access:** Navigate to [http://localhost:3000/users](http://localhost:3000/users) after starting the development server.
+The current UI and API use only the `User` model. The `Post` model is present in the schema but has no route or interface yet.
 
-## 🛠️ Development Commands
+## Useful commands
 
 ```bash
-# Start development server
+# Development server
 pnpm dev
 
-# Build for production
-pnpm build
-
-# Start production server
-pnpm start
-
-# Run linting
+# Lint the project
 pnpm lint
 
-# Generate Prisma client
-pnpm prisma generate
+# Generate the Prisma client
+pnpm exec prisma generate
 
-# Apply database changes
-pnpm prisma db push
+# Validate the Prisma schema
+pnpm exec prisma validate
 
-# Create new migration
-pnpm prisma migrate dev
+# Synchronize the schema without migrations
+pnpm exec prisma db push
 
-# Open Prisma Studio
-pnpm prisma studio
+# Inspect data in Prisma Studio
+pnpm exec prisma studio
 
-# Reset database (⚠️ destroys data)
-pnpm prisma migrate reset
+# Production build and server
+pnpm build
+pnpm start
 ```
 
-## 🌟 Features Breakdown
+`pnpm build` generates the Prisma client and prerenders `/users`. `DATABASE_URL` must therefore be set and the database must be reachable during the build as well as at runtime.
 
-### Form Validation
+## Project layout
 
-- ✅ Real-time email format validation
-- ✅ Required field validation
-- ✅ Duplicate email prevention
-- ✅ Custom error messages
+```text
+app/
+├── api/signup/route.ts       # Signup endpoint
+├── components/SignupForm.tsx # Client-side form
+├── generated/prisma/         # Generated by Prisma; ignored by Git
+├── users/page.tsx            # Server-rendered user list
+├── globals.css
+├── layout.tsx
+└── page.tsx
+lib/
+└── prisma.ts                 # Shared Prisma client
+prisma/
+└── schema.prisma             # PostgreSQL schema
+prisma.config.ts              # Prisma CLI configuration
+```
 
-### User Experience
+## Deployment notes
 
-- ✅ Loading states during submission
-- ✅ Success and error feedback
-- ✅ Form auto-reset after success
-- ✅ Responsive design
-- ✅ Accessibility features
+Deploy to a Node.js host that supports Next.js and can reach your PostgreSQL database. Configure `DATABASE_URL` for both the build and runtime environments, then use the repository's normal install, build, and start commands.
 
-### Security
+For a longer-lived production deployment, add and commit Prisma migrations instead of relying on `db push`, then run `prisma migrate deploy` as part of the release process.
 
-- ✅ Server-side validation
-- ✅ SQL injection prevention (Prisma)
-- ✅ Input sanitization
-- ✅ Error handling
-
-## 🚀 Deployment
-
-### Vercel (Recommended)
-
-1. Push your code to GitHub
-2. Connect your repository to [Vercel](https://vercel.com)
-3. Add environment variables in Vercel dashboard
-4. Deploy automatically
-
-### Other Platforms
-
-This project can be deployed on any platform that supports Next.js:
-
-- **Netlify**
-- **Railway**
-- **AWS Amplify**
-- **Google Cloud Run**
-- **Azure Static Web Apps**
-
-## 🔧 Configuration
-
-### Environment Variables
-
-| Variable       | Description                          | Required |
-| -------------- | ------------------------------------ | -------- |
-| `DATABASE_URL` | PostgreSQL connection string         | ✅       |
-| `NODE_ENV`     | Environment (development/production) | ❌       |
-
-### Prisma Configuration
-
-The project uses Prisma with the following features:
-
-- **Connection pooling** with Prisma Accelerate
-- **Type-safe** database queries
-- **Auto-generated** TypeScript types
-- **Migration** system for schema changes
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the project
-2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **Next.js Team** - For the amazing React framework
-- **Prisma Team** - For the excellent database toolkit
-- **Tailwind CSS** - For the utility-first CSS framework
-- **Heroicons** - For the beautiful icon library
-
-## 📧 Contact
-
-Your Name - [@dedkola](https://github.com/dedkola)
+The `/users` page exposes every stored name and email address. Protect or remove that route before using this code with real personal data. A production signup flow should also add authentication, rate limiting, abuse protection, and any consent or verification required for the application.
