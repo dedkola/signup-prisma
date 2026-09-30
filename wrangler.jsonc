@@ -26,6 +26,7 @@
   "images": {
     "binding": "IMAGES"
   },
+  "previews": {},
   "observability": {
     "enabled": true
   }
